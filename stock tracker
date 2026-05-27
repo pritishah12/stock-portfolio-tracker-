@@ -1,0 +1,80 @@
+import csv
+
+STOCK_PRICES = {
+    "AAPL": 180,
+    "TSLA": 250,
+    "MSFT": 320,
+    "GOOG": 2700,
+    "AMZN": 3500,
+}
+
+OUTPUT_FILE = "portfolio_summary.csv"
+
+
+def get_stock_symbol():
+    symbol = input("Enter stock symbol (or press Enter to finish): ").strip().upper()
+    return symbol
+
+
+def get_quantity(symbol):
+    while True:
+        try:
+            quantity = int(input(f"Enter quantity for {symbol}: ").strip())
+            if quantity < 0:
+                raise ValueError("Quantity must be zero or positive.")
+            return quantity
+        except ValueError:
+            print("Please enter a valid integer quantity.")
+
+
+def main():
+    print("Stock Portfolio Tracker")
+    print("Available stocks:")
+    for symbol, price in STOCK_PRICES.items():
+        print(f"  {symbol}: ${price}")
+    print("\nEnter one stock at a time. Press Enter without typing a symbol to finish.\n")
+
+    portfolio = {}
+    while True:
+        symbol = get_stock_symbol()
+        if not symbol:
+            break
+        if symbol not in STOCK_PRICES:
+            print("Symbol not recognized. Please choose from the hardcoded list.")
+            continue
+        quantity = get_quantity(symbol)
+        if quantity == 0:
+            portfolio.pop(symbol, None)
+        else:
+            portfolio[symbol] = portfolio.get(symbol, 0) + quantity
+
+    if not portfolio:
+        print("No stocks entered. Exiting.")
+        return
+
+    total_value = 0
+    print("\nPortfolio summary:")
+    print("Symbol | Quantity | Price | Value")
+    print("------ | -------- | ----- | -----")
+    for symbol, quantity in portfolio.items():
+        price = STOCK_PRICES[symbol]
+        value = price * quantity
+        total_value += value
+        print(f"{symbol:6} | {quantity:8} | ${price:<5} | ${value}")
+
+    print(f"\nTotal investment value: ${total_value}")
+
+    save = input("Save summary to portfolio_summary.csv? (y/n): ").strip().lower()
+    if save == "y":
+        with open(OUTPUT_FILE, mode="w", newline="", encoding="utf-8") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(["Symbol", "Quantity", "Price", "Value"])
+            for symbol, quantity in portfolio.items():
+                price = STOCK_PRICES[symbol]
+                writer.writerow([symbol, quantity, price, price * quantity])
+            writer.writerow(["", "", "Total", total_value])
+        print(f"Saved portfolio summary to {OUTPUT_FILE}")
+
+
+if __name__ == "__main__":
+    main()
