@@ -1,0 +1,27 @@
+def get_bot_reply(user_input: str) -> str:
+    """Return a predefined reply based on simple user input patterns."""
+    normalized = user_input.strip().lower()
+    if normalized in ("hello", "hi", "hey"):
+        return "Hi!"
+    if normalized in ("how are you", "how are you?", "how are you doing"):
+        return "I'm fine, thanks!"
+    if normalized in ("bye", "goodbye", "see you"):
+        return "Goodbye!"
+    if normalized in ("thanks", "thank you"):
+        return "You're welcome!"
+    return "Sorry, I don't understand that."
+
+
+def run_chatbot():
+    """Run a simple loop to chat with the user until they say goodbye."""
+    print("Simple Chatbot: say 'hello', 'how are you', or 'bye'.")
+    while True:
+        user_input = input("You: ")
+        reply = get_bot_reply(user_input)
+        print(f"Bot: {reply}")
+        if user_input.strip().lower() in ("bye", "goodbye", "see you"):
+            break
+
+
+if __name__ == "__main__":
+    run_chatbot()
