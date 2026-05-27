@@ -1,0 +1,57 @@
+import random
+
+WORDS = [
+    "apple",
+    "mountain",
+    "python",
+    "garden",
+    "planet",
+]
+
+MAX_INCORRECT = 6
+
+
+def play_hangman():
+    word = random.choice(WORDS)
+    guessed_letters = set()
+    incorrect_guesses = 0
+
+    print("Welcome to Hangman!")
+    print(f"You have {MAX_INCORRECT} incorrect guesses. Good luck!\n")
+
+    while True:
+        display_word = " ".join(
+            letter if letter in guessed_letters else "_" for letter in word
+        )
+        print(f"Word: {display_word}")
+        print(f"Incorrect guesses left: {MAX_INCORRECT - incorrect_guesses}")
+        print(f"Guessed letters: {', '.join(sorted(guessed_letters)) or 'None'}")
+
+        guess = input("Enter a letter: ").strip().lower()
+        if len(guess) != 1 or not guess.isalpha():
+            print("Please enter exactly one letter.\n")
+            continue
+
+        if guess in guessed_letters:
+            print("You already guessed that letter. Try another one.\n")
+            continue
+
+        guessed_letters.add(guess)
+
+        if guess in word:
+            print("Nice! That letter is in the word.\n")
+        else:
+            incorrect_guesses += 1
+            print("Sorry, that letter is not in the word.\n")
+
+        if all(letter in guessed_letters for letter in word):
+            print(f"Congratulations! You guessed the word: {word}")
+            break
+
+        if incorrect_guesses >= MAX_INCORRECT:
+            print(f"Game over! You ran out of guesses. The word was: {word}")
+            break
+
+
+if __name__ == "__main__":
+    play_hangman()
